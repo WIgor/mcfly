@@ -98,9 +98,8 @@ impl fmt::Display for HistoryCommand {
     }
 }
 
-fn parse_zsh_line(line: &str, history_format: HistoryFormat) -> Option<HistoryCommand> {
-    let zsh_regex = Regex::new(r"^: (\d+):\d+;(.*)").unwrap();
-    let captures = zsh_regex.captures(line);
+fn parse_zsh_line(re: &Regex, line: &str, history_format: HistoryFormat) -> Option<HistoryCommand> {
+    let captures = re.captures(line);
     match captures {
         Some(c) => {
             let time_opt = c.get(1).map(|ts| i64::from_str(ts.as_str()));
@@ -135,8 +134,9 @@ pub fn full_history(path: &Path, history_format: HistoryFormat) -> Vec<HistoryCo
                 .collect()
         }
         HistoryFormat::Zsh { .. } => {
+            let parse_regex = Regex::new(r"^: (\d+):\d+;(.*)").unwrap();
             ZshHistoryReader::from_file(path)
-                .flat_map(|line| parse_zsh_line(line.as_str(), history_format))
+                .flat_map(|line| parse_zsh_line(&parse_regex, line.as_str(), history_format))
                 .collect()
         }
         HistoryFormat::Fish => {
