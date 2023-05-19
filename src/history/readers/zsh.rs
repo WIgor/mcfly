@@ -1,21 +1,17 @@
 use regex::Regex;
+use rev_lines::RevLines;
 use std::io::{BufRead, BufReader, Read};
 use std::fs::File;
 use std::path::Path;
 use std::iter::Iterator;
+use crate::history::readers::commons::Error;
 
 const DEFAULT_BUF_SIZE: usize = 1 << 12;
 const ZSH_META_CHAR: u8 = 0x83;
 const END_LINE: u8 = b'\n';
 
-#[derive(Debug, PartialEq)]
-enum Error {
-    EOF,
-    ERR(String),
-}
-
 pub struct ZshHistoryReader {
-    reader: Box<dyn BufRead>,
+    reader: RevLines<BufReader<>>,
     zsh_command_start: Regex,
     command_line: String,
 }

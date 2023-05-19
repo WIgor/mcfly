@@ -494,6 +494,7 @@ dependencies = [
  "rand",
  "regex",
  "relative-path",
+ "rev_lines",
  "rusqlite",
  "shellexpand",
  "unicode-segmentation",
@@ -697,6 +698,12 @@ name = "relative-path"
 version = "1.7.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d3bf6b372449361333ac1f498b7edae4dd5e70dccd7c0c2a7c7bce8f05ede648"
+
+[[package]]
+name = "rev_lines"
+version = "0.2.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "af8297f87280eeeed2dea96a8eff55ddbb909a7cccc42be6087d29954068304d"
 
 [[package]]
 name = "rusqlite"

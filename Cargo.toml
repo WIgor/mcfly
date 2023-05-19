@@ -25,6 +25,7 @@ libc = "0.2"
 rand = "0.8"
 regex = "1"
 relative-path = "1.7"
+rev_lines = "0.2.2"
 shellexpand = "2.1"
 unicode-segmentation = "1.9"
 
