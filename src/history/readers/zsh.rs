@@ -1,6 +1,6 @@
 use regex::Regex;
 use rev_lines::RevLines;
-use std::io::{BufRead, BufReader, Read};
+use std::io::{BufRead, BufReader, Read, Seek, Cursor};
 use std::fs::File;
 use std::path::Path;
 use std::iter::Iterator;
@@ -10,13 +10,13 @@ const DEFAULT_BUF_SIZE: usize = 1 << 12;
 const ZSH_META_CHAR: u8 = 0x83;
 const END_LINE: u8 = b'\n';
 
-pub struct ZshHistoryReader {
-    reader: RevLines<BufReader<>>,
+pub struct ZshHistoryReader<R: Read + Seek> {
+    reader: RevLines<BufReader<R>>,
     zsh_command_start: Regex,
     command_line: String,
 }
 
-impl Iterator for ZshHistoryReader {
+impl<R: Read + Seek> Iterator for ZshHistoryReader<R> {
     type Item = String;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -28,16 +28,16 @@ impl Iterator for ZshHistoryReader {
     }
 }
 
-impl ZshHistoryReader {
-    pub fn from_file(path: &Path) -> ZshHistoryReader {
+impl<R: Read + Seek> ZshHistoryReader<R> {
+    pub fn from_file(path: &Path) -> ZshHistoryReader<R> {
         ZshHistoryReader::from_reader(
             Box::new(File::open(path)
                 .unwrap_or_else(|_| panic!("McFly error: {:?} file not found", &path))))
     }
 
-    pub fn from_reader(reader: Box<dyn Read>) -> ZshHistoryReader {
+    pub fn from_cursor(cursor: Cursor<u8>) -> ZshHistoryReader<R> {
         ZshHistoryReader {
-            reader: Box::new(BufReader::new(reader)),
+            reader: RevLines::new(BufReader::new(cursor)).unwrap(),
             zsh_command_start: Regex::new(r"^: \d+:\d+;.*$").unwrap(),
             command_line: String::with_capacity(DEFAULT_BUF_SIZE),
         }
