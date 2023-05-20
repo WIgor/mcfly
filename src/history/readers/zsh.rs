@@ -7,7 +7,7 @@ use std::iter::Iterator;
 use crate::history::readers::commons::Error;
 
 const DEFAULT_BUF_SIZE: usize = 1 << 12;
-const ZSH_META_CHAR: u8 = 0x83;
+const ZSH_META_CHAR:† u8 = 0x83;
 const END_LINE: u8 = b'\n';
 
 pub struct ZshHistoryReader<R: Read + Seek> {
