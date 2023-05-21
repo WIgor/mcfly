@@ -6,7 +6,7 @@ use std::fmt;
 use std::fs;
 use std::fs::File;
 use std::fs::OpenOptions;
-use std::io::Read;
+use std::io::{BufReader, Read};
 use std::io::Write;
 use std::path::Path;
 use std::path::PathBuf;
@@ -135,7 +135,7 @@ pub fn full_history(path: &Path, history_format: HistoryFormat) -> Vec<HistoryCo
         }
         HistoryFormat::Zsh { .. } => {
             let parse_regex = Regex::new(r"^: (\d+):\d+;(.*)").unwrap();
-            ZshHistoryReader::from_file(path)
+            ZshHistoryReader::from_bufreader(BufReader::new(File::open(path).unwrap_or_else(|_| panic!("McFly error: {:?} file not found", &path))))
                 .flat_map(|line| parse_zsh_line(&parse_regex, line.as_str(), history_format))
                 .collect()
         }
