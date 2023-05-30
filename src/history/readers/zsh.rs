@@ -3,8 +3,8 @@ use rev_lines::RevLines;
 use std::io::{BufReader, Read, Seek};
 use std::iter::{Iterator};
 use crate::history::readers::commons::Error;
+use crate::history::readers::commons::DEFAULT_BUF_SIZE;
 
-const DEFAULT_BUF_SIZE: usize = 1 << 12;
 const ZSH_META_CHAR: u8 = 0x83;
 
 pub struct ZshHistoryReader<R: Read + Seek> {
@@ -82,7 +82,7 @@ impl<R: Read + Seek> ZshHistoryReader<R> {
 #[cfg(test)]
 mod tests {
     use std::io::{BufReader, Cursor};
-    use crate::history::readers::zsh::Error;
+    use crate::history::readers::commons::Error;
     use crate::history::readers::zsh::ZshHistoryReader;
 
     #[test]
